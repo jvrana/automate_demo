@@ -1,6 +1,7 @@
 # PyDemo Automator
 
-This allows you to run scripted coded demos for your projects. See below.
+Runs scripted coded demos for your projects. Save your code as a file run `python run_demo.py`.
+The script automates types to give the illusion of a human typing.
 
 ![example](images/pydemo.gif?raw=true)
 
