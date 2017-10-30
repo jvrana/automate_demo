@@ -7,7 +7,7 @@ import os
 
 @hug.cli()
 def run_demo(filepath: hug.types.text, speed: hug.types.float_number=1.0, ignore_comments:
-hug.types.smart_boolean=False):
+hug.types.smart_boolean=False, run_python: hug.types.smart_boolean=True):
 
     filepath = os.path.abspath(filepath)
     if not os.path.isfile(filepath):
@@ -20,7 +20,7 @@ hug.types.smart_boolean=False):
 
     python_start_delay = (0.5,)
     keystroke_delay = (0.02, 0.1)
-    return_delay = (0.2, 0.4)
+    return_delay = (0.4, 0.6)
 
     def _mult(t):
         return [float(x) / speed for x in list(t)]
@@ -45,8 +45,9 @@ hug.types.smart_boolean=False):
 
 
     print("running demo {}".format(os.path.abspath(filepath)))
-    type_line("python", with_return=True)
-    time.sleep(*_mult(python_start_delay))
+    if run_python:
+        type_line("python", with_return=True)
+        time.sleep(*_mult(python_start_delay))
 
     lines = []
     with open(filepath, 'rU') as f:
