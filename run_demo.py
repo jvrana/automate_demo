@@ -5,9 +5,11 @@ import re
 import hug
 import os
 
+RETURN = '\r'
+
 @hug.cli()
 def run_demo(filepath: hug.types.text, speed: hug.types.float_number=1.0, ignore_comments:
-hug.types.smart_boolean=False, run_python: hug.types.smart_boolean=True):
+hug.types.smart_boolean=False, python: hug.types.smart_boolean=True, asciicast: hug.types.smart_boolean=True):
 
     filepath = os.path.abspath(filepath)
     if not os.path.isfile(filepath):
@@ -41,11 +43,15 @@ hug.types.smart_boolean=False, run_python: hug.types.smart_boolean=True):
             time.sleep(random.uniform(*_mult(keystroke_delay)))
         time.sleep(random.uniform(*_mult(return_delay)))
         if with_return:
-            sysevents.keystroke('\r')
+            sysevents.keystroke(RETURN)
 
+    if asciicast:
+        print("recording using asciicast...")
+        type_line('asciinema rec', with_return=True)
+        time.sleep(1)
 
     print("running demo {}".format(os.path.abspath(filepath)))
-    if run_python:
+    if python:
         type_line("python", with_return=True)
         time.sleep(*_mult(python_start_delay))
 
@@ -56,6 +62,12 @@ hug.types.smart_boolean=False, run_python: hug.types.smart_boolean=True):
 
     for line in lines:
         type_line(line)
+
+    if asciicast:
+        sysevents.keystroke('d', using=[k.control_down])
+        type_line('exit', with_return=True)
+        time.sleep(1)
+        sysevents.keystroke(RETURN)
 
 if __name__ == '__main__':
     run_demo.interface.cli()
