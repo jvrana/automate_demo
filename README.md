@@ -7,25 +7,39 @@ The script automates types to give the illusion of a human typing.
 
 ## Usage
 
+### Requirements
+
+* [asciinema](https://asciinema.org/) (optional for autorecording of terminal)
+    * `brew install asciinema`
+* mac
+
+### Installation
+
 ```bash
-python run_demo.py <path_to_code> -r <float> -i <boolean>
+cd to/py_demo/dir
+pip install .
 ```
 
-- r: speed of run
-- i: whether to ignore other comments
-- a: whether to record video using asciinema
+### Usage
 
-use `# wait 1` in code to wait for 1 seconds.
+#### Run
 
-You can use something like giphy capture to grab your video.
-
-
-Install [asciinema](https://asciinema.org/) with:
 ```bash
-brew install asciinema
+pydemo filepath/to/your/code.py -r <speed> -i <ignore comments> -a <auto-record>
 ```
 
-begin recording with:
+filepath: file path to your demo code
+
+-r: speed of run
+
+-i: whether to ignore other comments
+
+-a: whether to record video using asciinema
+
+#### Help
+
+Run the following to get help with parameters:
+
 ```bash
-asciinema rec
+python -h
 ```
