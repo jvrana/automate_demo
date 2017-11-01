@@ -69,5 +69,8 @@ hug.types.smart_boolean=False, python: hug.types.smart_boolean=True, asciicast: 
         time.sleep(1)
         sysevents.keystroke(RETURN)
 
-if __name__ == '__main__':
+def main():
     run_demo.interface.cli()
+
+if __name__ == '__main__':
+    main()
