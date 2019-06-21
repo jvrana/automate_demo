@@ -4,21 +4,39 @@ import time
 import re
 import hug
 import os
+from AppKit import NSWorkspace
+
 
 RETURN = '\r'
+TERMINAL = app("Terminal")
+SYSEVENTS = app("System Events")
+
+def open_terminal(cd):
+    TERMINAL.run()
+    time.sleep(0.5)
+    TERMINAL.activate()
+    time.sleep(0.5)
+    SYSEVENTS.keystroke('n', using=k.command_down)
+    time.sleep(0.1)
+    SYSEVENTS.keystroke('cd {}'.format(cd) + RETURN)
+    time.sleep(0.05)
+
+def curr_window():
+    return NSWorkspace.sharedWorkspace().frontmostApplication().localizedName()
 
 @hug.cli()
 def run_demo(filepath: hug.types.text, speed: hug.types.float_number=1.0, ignore_comments:
-hug.types.smart_boolean=False, python: hug.types.smart_boolean=True, asciicast: hug.types.smart_boolean=True):
+hug.types.smart_boolean=False, python: hug.types.smart_boolean=False, asciicast: hug.types.smart_boolean=True,
+             cd: hug.types.text=''):
 
     filepath = os.path.abspath(filepath)
     if not os.path.isfile(filepath):
         raise FileNotFoundError("Cannot run demo. File not found: {}".format(filepath))
 
-    terminal = app("Terminal")
-    terminal.activate()
-    time.sleep(1.0)
-    sysevents = app("System Events")
+    filedir = os.path.dirname(filepath)
+    if cd == '':
+        cd = filedir
+    open_terminal(cd)
 
     python_start_delay = (0.5,)
     keystroke_delay = (0.02, 0.1)
@@ -36,14 +54,14 @@ hug.types.smart_boolean=False, python: hug.types.smart_boolean=True, asciicast: 
                 print("  waiting for {}s".format(m.group(1)))
                 return
             if ignore_comments:
-                print("  ignoring commenct")
+                print("  ignoring comment")
                 return
         for char in line:
-            sysevents.keystroke(char)
+            SYSEVENTS.keystroke(char)
             time.sleep(random.uniform(*_mult(keystroke_delay)))
         time.sleep(random.uniform(*_mult(return_delay)))
         if with_return:
-            sysevents.keystroke(RETURN)
+            SYSEVENTS.keystroke(RETURN)
 
     if asciicast:
         print("recording using asciicast...")
@@ -52,7 +70,7 @@ hug.types.smart_boolean=False, python: hug.types.smart_boolean=True, asciicast: 
 
     print("running demo {}".format(os.path.abspath(filepath)))
     if python:
-        type_line("python", with_return=True)
+        SYSEVENTS.keystroke('python'+RETURN)
         time.sleep(*_mult(python_start_delay))
 
     lines = []
@@ -61,13 +79,17 @@ hug.types.smart_boolean=False, python: hug.types.smart_boolean=True, asciicast: 
 
 
     for line in lines:
+        if not curr_window() == TERMINAL.name.get():
+            print("demo cancelled.")
+            return
         type_line(line)
 
     if asciicast:
-        sysevents.keystroke('d', using=[k.control_down])
-        type_line('exit', with_return=True)
+        SYSEVENTS.keystroke('d', using=[k.control_down])
+        time.sleep(0.1)
+        SYSEVENTS.keystroke('exit'+RETURN)
         time.sleep(1)
-        sysevents.keystroke(RETURN)
+        SYSEVENTS.keystroke(RETURN)
 
 def main():
     run_demo.interface.cli()

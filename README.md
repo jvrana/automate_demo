@@ -12,6 +12,8 @@ The script automates types to give the illusion of a human typing.
 * [asciinema](https://asciinema.org/) (optional for autorecording of terminal)
     * `brew install asciinema`
 * mac
+* appscript (included in most python distributions)
+* pyobjc (objective-c - to - python bridge)
 
 ### Installation
 
@@ -36,6 +38,8 @@ filepath: file path to your demo code
 
 -a: whether to record video using asciinema
 
+-c: directory to cd into (default is demo code parent directory)
+
 #### Help
 
 Run the following to get help with parameters:
@@ -43,3 +47,7 @@ Run the following to get help with parameters:
 ```bash
 python -h
 ```
+
+# Warning
+
+Use with caution. Be careful what scripts you are running.
